@@ -1,0 +1,50 @@
+@use './partials/mixins' as *;
+@use './partials/variables' as *;
+
+main {
+    height: calc(100vh - 60px);
+    color: white;
+    background-color: $main-background;
+    overflow-y: auto;
+    position: relative;
+}
+
+.deathknight {
+    color: $dk;
+}
+
+.druid {
+    color: $druid;
+}
+
+.hunter {
+    color: $hunter;
+}
+
+.mage {
+    color: $mage;
+}
+
+.paladin {
+    color: $paladin;
+}
+
+.priest {
+    color: $priest;
+}
+
+.rogue {
+    color: $rogue;
+}
+
+.shaman {
+    color: $shaman;
+}
+
+.warlock{
+    color: $warlock;
+}
+
+.warrior{
+    color: $warrior;
+}
