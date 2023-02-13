@@ -78,6 +78,9 @@ export default {
         },
         getIndex(index) {
             this.currentIndex = index;
+        },
+        changeClassFilter(filter) {
+            this.classFilter = filter;
         }
     },
     mounted() {
@@ -88,7 +91,7 @@ export default {
 </script>
 
 <template>
-    <RosterComposition :guildRoster="guildRoster" :classes="classes" />
+    <RosterComposition :guildRoster="guildRoster" :classes="classes" @class-select="changeClassFilter" />
     <div class="container">
         <div class="row row-cols-5 text-center mb-3 px-3">
             <div class="col">

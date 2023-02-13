@@ -11,6 +11,7 @@ export default {
         guildRoster: Array,
         classes: Array
     },
+    emits: ['class-select'],
     methods: {
         properClassName(name) {
             return name.toLowerCase().replace(" ", "");
@@ -50,7 +51,8 @@ export default {
             </div>
             <div class="d-flex justify-content-center align-items-stretch mb-3">
                 <div v-for="className in classes" :key="className"
-                    class="class-group d-flex flex-column align-items-center align-self-end me-2">
+                    class="class-group d-flex flex-column align-items-center align-self-end me-2"
+                    @click="$emit('class-select', className)">
                     <p class="mb-2">{{ classQuantity(className) }}</p>
                     <div :class="properClassName(className)" class="classcolumn mb-2"
                         :style="`height : ${classColumnHeight(className)}px`"></div>

@@ -6,7 +6,8 @@ export default {
     data() {
         return {
             character: [],
-            isShown: false
+            isShown: false,
+            isLoading: false,
         };
     },
     props: {
@@ -34,15 +35,20 @@ export default {
         fetchCharacter() {
             if (this.character.length !== 0 && !this.character.error) return
             axios.get(`http://armory.warmane.com/api/character/${this.characterData.name}/Icecrown/summary`).then(res => {
+                this.isLoading = true
                 this.character = res.data;
                 if (this.character.error) {
                     const callInterval = setInterval(() => {
                         axios.get(`http://armory.warmane.com/api/character/${this.characterData.name}/Icecrown/summary`).then(res => {
                             this.character = res.data;
                             if (!this.character.error) clearInterval(callInterval);
+                        }).catch(e => { console.log(e) }).then(() => {
+                            if (!this.character || !this.character.error) this.isLoading = false;
                         })
                     }, 2000)
                 }
+            }).catch(e => { console.log(e) }).then(() => {
+                if (this.character && !this.character.error) this.isLoading = false;
             })
         },
         cardClick() {
@@ -53,6 +59,7 @@ export default {
         }
 
     },
+
     components: { CharacterDetails }
 }
 </script>
@@ -88,7 +95,8 @@ export default {
         </div>
         <font-awesome-icon icon="fa-solid fa-chevron-down"
             :class="{ 'rotate mb-5': this.index === currentIndex && isShown }" />
-        <CharacterDetails v-if="isShown && index === currentIndex" :characterData="this.character" />
+        <CharacterDetails v-if="isShown && index === currentIndex" :characterData="this.character"
+            :isLoading="isLoading" />
     </div>
 </template>
 
