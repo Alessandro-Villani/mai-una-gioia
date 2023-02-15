@@ -70,13 +70,21 @@ export default {
             });
             return equipIds
         },
+        twoHandsQuantity() {
+            if (!this.equipmentIds) return null;
+            const equipTypes = [];
+            this.equipmentIds.forEach(id => {
+                if (this.getItem(parseInt(id)).slot === 'Two-Hand') equipTypes.push(this.getItem(parseInt(id)).slot);
+            });
+            return equipTypes.length;
+        },
         gearScore() {
             if (!this.characterData.equipment) return null;
             const singleGs = []
             this.equipmentIds.forEach(id => {
                 const itemLevel = this.getItem(parseInt(id)).itemLevel;
                 const itemRarity = this.getItem(parseInt(id)).quality;
-                const slotMOD = this.slotValues[this.getItem(parseInt(id)).slot];
+                const slotMOD = this.getItem(parseInt(id)).slot === 'Two-Hand' && this.twoHandsQuantity === 2 ? 1.000 : this.slotValues[this.getItem(parseInt(id)).slot];
                 singleGs.push(this.calculateItemScore(itemLevel, itemRarity, slotMOD));
             });
             let gs = 0
@@ -84,6 +92,18 @@ export default {
                 gs += item;
             })
             return gs || null;
+        },
+        gsColor() {
+            let color = '#8C8C8C'
+            if (this.gearScore >= 1000) color = '#FFFFFF'
+            if (this.gearScore >= 2000) color = '#1FFF00'
+            if (this.gearScore >= 3000) color = '#007FFF'
+            if (this.gearScore >= 4000) color = '#AF47F7'
+            if (this.gearScore >= 5000) color = '#f04c00'
+            if (this.gearScore >= 6000) color = '#FF0000'
+            if (this.gearScore = 0) color = '#E6CC80'
+            return color
+
         }
     },
     methods: {
@@ -118,7 +138,7 @@ export default {
         <AppLoader v-if="isLoading" />
         <div class="row">
             <div class="col-5">
-                <h3 v-if="gearScore" class="mb-3">GEARSCORE: {{ gearScore }}</h3>
+                <h3 v-if="gearScore" class="mb-3" :style="{ color: `${gsColor}` }">GEARSCORE: {{ gearScore }}</h3>
                 <ul class="p-0">
                     <li v-for="piece in characterData.equipment" :key="piece.item">
                         <a :class="getRarity(parseInt(piece.item))"
