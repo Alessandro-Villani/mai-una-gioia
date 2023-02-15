@@ -95,7 +95,7 @@ export default {
         </div>
         <font-awesome-icon icon="fa-solid fa-chevron-down"
             :class="{ 'rotate mb-5': this.index === currentIndex && isShown }" />
-        <CharacterDetails v-if="isShown && index === currentIndex" :characterData="this.character"
+        <CharacterDetails v-show="isShown && index === currentIndex" :characterData="this.character"
             :isLoading="isLoading" />
     </div>
 </template>
