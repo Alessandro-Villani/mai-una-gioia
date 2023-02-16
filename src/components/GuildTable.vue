@@ -14,6 +14,7 @@ export default {
             classFilter: '',
             races: [],
             raceFilter: '',
+            levelFilter: null,
             onlineCharacters: undefined,
             currentIndex: null
         };
@@ -35,6 +36,11 @@ export default {
             if (this.raceFilter) {
                 filteredRoster = filteredRoster.filter(character => {
                     return character.race.includes(this.raceFilter);
+                })
+            }
+            if (this.levelFilter) {
+                filteredRoster = filteredRoster.filter(character => {
+                    return character.level === this.levelFilter.toString();
                 })
             }
             return filteredRoster
@@ -81,6 +87,9 @@ export default {
         },
         changeClassFilter(filter) {
             this.classFilter = filter;
+        },
+        setLevelFilter(bool) {
+            this.levelFilter = bool ? 80 : null;
         }
     },
     mounted() {
@@ -91,7 +100,8 @@ export default {
 </script>
 
 <template>
-    <RosterComposition :guildRoster="guildRoster" :classes="classes" @class-select="changeClassFilter" />
+    <RosterComposition :guildRoster="guildRoster" :classes="classes" @class-select="changeClassFilter"
+        @only-80="setLevelFilter" />
     <div class="container">
         <div class="row row-cols-5 text-center mb-3 px-3">
             <div class="col">
@@ -114,7 +124,11 @@ export default {
             </div>
             <div class="col">
                 <h5 class="mb-2">LIVELLO</h5>
-                <input type="number" min="1" max="80">
+                <div class="level-group d-flex align-items-center justify-content-center">
+                    <input class="level" type="number" min="1" max="80" v-model="levelFilter">
+                    <button class="reset-level btn btn-danger" @click="levelFilter = null"><font-awesome-icon
+                            icon="fa-solid fa-circle-minus" /></button>
+                </div>
             </div>
             <div class="col">
                 <h5 class="mb-2">STATUS</h5>
@@ -125,9 +139,9 @@ export default {
                 </select>
             </div>
         </div>
-        <CharacterRow v-for="(character, i) in filteredRoster" :key="character.name" :characterData="character"
-            :index="i" :currentIndex="currentIndex" @index="getIndex" />
-    </div>
+        <CharacterRow v-for="(character, i) in filteredRoster" :key="character.name" :characterData="character" :index="i"
+            :currentIndex="currentIndex" @index="getIndex" />
+</div>
 </template>
 
 <style scoped lang="scss">
@@ -142,5 +156,24 @@ input {
     font-size: 12px;
     text-align: center;
     border: 2px solid $alliance-blue;
+
+    &.level {
+        border-radius: 5px 0px 0 5px;
+    }
+}
+
+.reset-level {
+    border-radius: 0 5px 5px 0;
+    padding: 2px 5px;
+    font-size: 12px;
+    border: 2px solid $alliance-blue;
+    border-left: none;
+    transition: all 0.5s;
+
+    &:hover {
+        border-color: $alliance-blue;
+        background-color: $alliance-blue;
+        color: rgb(220, 53, 69);
+    }
 }
 </style>

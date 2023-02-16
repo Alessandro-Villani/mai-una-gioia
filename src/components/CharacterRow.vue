@@ -65,7 +65,7 @@ export default {
 </script>
 
 <template>
-    <div class="card p-3 mb-3" @click="cardClick">
+    <div class="card p-3 px-5 mb-3" @click="cardClick">
         <div class="row row-cols-5 align-items-center text-center mb-2">
             <div class="col">
                 <h6 class="mb-0" :class="colorClass">{{ characterData.name }}</h6>
@@ -97,7 +97,7 @@ export default {
             :class="{ 'rotate mb-5': this.index === currentIndex && isShown }" />
         <CharacterDetails v-show="isShown && index === currentIndex" :characterData="this.character"
             :isLoading="isLoading" />
-    </div>
+</div>
 </template>
 
 <style scoped lang="scss">

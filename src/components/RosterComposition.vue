@@ -11,7 +11,7 @@ export default {
         guildRoster: Array,
         classes: Array
     },
-    emits: ['class-select'],
+    emits: ['class-select', 'only-80'],
     methods: {
         properClassName(name) {
             return name.toLowerCase().replace(" ", "");
@@ -47,7 +47,7 @@ export default {
         <div v-if="isShown" class="class-graph py-3">
             <div class="checkbox-group d-flex justify-content-center align-items-center mb-3">
                 <label for="only-max" class="me-2">80 only</label>
-                <input type="checkbox" id="only-max" v-model="only80">
+                <input type="checkbox" id="only-max" v-model="only80" @change="$emit('only-80', only80)">
             </div>
             <div class="d-flex justify-content-center align-items-stretch mb-3">
                 <div v-for="className in classes" :key="className"
@@ -57,12 +57,12 @@ export default {
                     <div :class="properClassName(className)" class="classcolumn mb-2"
                         :style="`height : ${classColumnHeight(className)}px`"></div>
                     <p class="mb-0" :class="properClassName(className)">{{ className === 'Death Knight' ? 'DK' :
-                    className}}
+                        className }}
                     </p>
                 </div>
             </div>
         </div>
-    </div>
+</div>
 </template>
 
 <style scoped lang="scss">
