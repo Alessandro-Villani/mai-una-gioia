@@ -20,7 +20,6 @@ export default {
             let memberCount = this.guildRoster.filter(char => {
                 return char.class === className;
             })
-            console.log(memberCount);
             if (this.only80) {
                 memberCount = memberCount.filter(char => {
                     return char.level === '80';
@@ -62,7 +61,7 @@ export default {
                 </div>
             </div>
         </div>
-</div>
+    </div>
 </template>
 
 <style scoped lang="scss">

@@ -12,8 +12,8 @@ export default {
             </a>
 
         </nav>
-        <p class="text-white me-3 mb-0">beta 0.2.0</p>
-</header>
+        <p class="text-white me-3 mb-0">beta 0.3.0</p>
+    </header>
 </template>
 
 <style scoped lang="scss">
