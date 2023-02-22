@@ -1,6 +1,7 @@
 <script>
 import AppLoader from './AppLoader.vue';
 import items from '../../../data.json';
+import axios from 'axios';
 
 
 export default {
@@ -47,7 +48,6 @@ export default {
                     Common: { A: 0.0000, B: 2.2500 }
                 }
             },
-            itemScores: []
         }
     },
     props: {
@@ -68,6 +68,18 @@ export default {
                 equipIds.push(equip.item);
             });
             return equipIds
+        },
+        characterItems() {
+            if (!this.characterData.equipment) return null;
+            const items = [];
+            this.characterData.equipment.forEach(equip => {
+                const url = `http://localhost/my_projects/mai_una_gioia_server/items.php?item-id=${parseInt(equip.item)}`
+                axios.get(url).then(res => {
+                    items.push(res.data[0]);
+                });
+            });
+            console.log('done');
+            return items;
         },
         twoHandsQuantity() {
             if (!this.equipmentIds) return null;
@@ -148,7 +160,6 @@ export default {
             if (itemRarity === 'Legendary') qualityScale = 1.3;
             if (itemRarity === 'Common' || itemRarity === 'Poor') qualityScale = 0.005;
             let table = itemLevel > 120 ? this.gsFormula.A : this.gsFormula.B;
-            console.log(table);
             let rarity = itemRarity === 'Legendary' ? 'Epic' : itemRarity === 'Common' || itemRarity === 'Poor' ? 'Uncommon' : itemRarity;
             let scale = 1.8618;
             let score = Math.floor(((itemLevel - table[rarity].A) / table[rarity].B) * slotMOD * scale * qualityScale);
@@ -164,7 +175,7 @@ export default {
         <AppLoader v-if="isLoading" />
         <div class="row">
             <div class="col-4 d-flex flex-column align-items-center">
-                <ul class="equip p-0 ps-5">
+                <ul class="equip p-0">
                     <li v-for="piece in characterData.equipment" :key="piece.item" class="d-flex align-items-center mb-2">
                         <a :class="getRarity(parseInt(piece.item))"
                             :href="`http://wotlk.cavernoftime.com/item=${piece.item}`"><img class="me-2"
@@ -218,7 +229,7 @@ export default {
                 </div>
             </div>
         </div>
-</div>
+    </div>
 </template>
 
 <style scoped lang="scss">
@@ -235,6 +246,10 @@ img.profession {
 
 ul {
     list-style: none;
+
+    a {
+        font-size: 14px;
+    }
 
     img {
         width: 30px;

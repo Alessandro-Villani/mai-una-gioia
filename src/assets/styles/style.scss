@@ -48,3 +48,11 @@ main {
 .warrior{
     color: $warrior;
 }
+
+::-webkit-scrollbar {
+    background-color: $secondary-background;
+}
+
+::-webkit-scrollbar-thumb{
+    background-color: $main-background;
+}

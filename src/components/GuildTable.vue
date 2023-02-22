@@ -8,6 +8,7 @@ export default {
     data() {
         return {
             guildRoster: [],
+            guildDkp: [],
             status: '',
             nameFilter: '',
             classes: [],
@@ -48,7 +49,7 @@ export default {
     },
     methods: {
         fetchCharacters() {
-            axios.get("https://armory.warmane.com/api/guild/Mai+Una+Gioia/Icecrown/summary").then(res => {
+            axios.get("http://localhost/my_projects/mai_una_gioia_server/roster.php").then(res => {
                 this.guildRoster = res.data.roster;
                 this.getAll('class', this.classes);
                 this.getAll('race', this.races);
@@ -58,22 +59,25 @@ export default {
                 this.$emit('online-characters', this.onlineCharacters);
                 if (this.status === 'online') {
                     const roster = res.data.roster;
-                    console.log('roster');
-                    console.log(roster);
                     this.guildRoster = roster.filter(character => {
                         return character.online;
                     })
                 }
                 if (this.status === 'offline') {
                     const roster = res.data.roster
-                    console.log('roster');
-                    console.log(roster);
                     this.guildRoster = roster.filter(character => {
                         return !character.online;
                     })
                 }
             }).catch(e => console.log(e)).then(() => {
-                console.log('here')
+
+            });
+        },
+        fetchDkp() {
+            axios.get("http://localhost/my_projects/mai_una_gioia_server/dkp_api.php").then(res => {
+                this.guildDkp = res.data;
+            }).catch(e => console.log(e)).then(() => {
+
             });
         },
         getAll(param, destination) {
@@ -94,6 +98,7 @@ export default {
     },
     mounted() {
         this.fetchCharacters();
+        this.fetchDkp();
     },
     components: { CharacterRow, RosterComposition }
 }
@@ -141,7 +146,7 @@ export default {
         </div>
         <CharacterRow v-for="(character, i) in filteredRoster" :key="character.name" :characterData="character" :index="i"
             :currentIndex="currentIndex" @index="getIndex" />
-</div>
+    </div>
 </template>
 
 <style scoped lang="scss">

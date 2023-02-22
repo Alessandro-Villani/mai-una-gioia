@@ -34,12 +34,13 @@ export default {
     methods: {
         fetchCharacter() {
             if (this.character.length !== 0 && !this.character.error) return
-            axios.get(`http://armory.warmane.com/api/character/${this.characterData.name}/Icecrown/summary`).then(res => {
+            const charUrl = `http://localhost/my_projects/mai_una_gioia_server/character.php?character=${this.characterData.name}`;
+            axios.get(charUrl).then(res => {
                 this.isLoading = true
                 this.character = res.data;
                 if (this.character.error) {
                     const callInterval = setInterval(() => {
-                        axios.get(`http://armory.warmane.com/api/character/${this.characterData.name}/Icecrown/summary`).then(res => {
+                        axios.get(charUrl).then(res => {
                             this.character = res.data;
                             if (!this.character.error) clearInterval(callInterval);
                         }).catch(e => { console.log(e) }).then(() => {
@@ -97,7 +98,7 @@ export default {
             :class="{ 'rotate mb-5': this.index === currentIndex && isShown }" />
         <CharacterDetails v-show="isShown && index === currentIndex" :characterData="this.character"
             :isLoading="isLoading" />
-</div>
+    </div>
 </template>
 
 <style scoped lang="scss">
