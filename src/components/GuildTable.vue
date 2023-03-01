@@ -15,6 +15,8 @@ export default {
             classFilter: '',
             races: [],
             raceFilter: '',
+            ranks: [],
+            rankFilter: '',
             levelFilter: null,
             onlineCharacters: undefined,
             currentIndex: null
@@ -44,6 +46,15 @@ export default {
                     return character.level === this.levelFilter.toString();
                 })
             }
+            if (this.rankFilter) {
+                const charactersNames = [];
+                this.guildDkp.forEach(character => {
+                    if (character.rank === this.rankFilter) charactersNames.push(character.name);
+                });
+                filteredRoster = filteredRoster.filter(character => {
+                    return charactersNames.includes(character.name);
+                })
+            }
             return filteredRoster
         }
     },
@@ -51,8 +62,8 @@ export default {
         fetchCharacters() {
             axios.get("http://localhost/my_projects/mai_una_gioia_server/roster.php").then(res => {
                 this.guildRoster = res.data.roster;
-                this.getAll('class', this.classes);
-                this.getAll('race', this.races);
+                this.getAll(this.guildRoster, 'class', this.classes);
+                this.getAll(this.guildRoster, 'race', this.races);
                 this.onlineCharacters = this.guildRoster.filter(character => {
                     return character.online;
                 }).length;
@@ -76,15 +87,16 @@ export default {
         fetchDkp() {
             axios.get("http://localhost/my_projects/mai_una_gioia_server/dkp_api.php").then(res => {
                 this.guildDkp = res.data;
+                this.getAll(this.guildDkp, 'rank', this.ranks, false)
             }).catch(e => console.log(e)).then(() => {
 
             });
         },
-        getAll(param, destination) {
-            this.guildRoster.forEach(character => {
+        getAll(origin, param, destination, order = true) {
+            origin.forEach(character => {
                 if (!destination.includes(character[param])) destination.push(character[param]);
             });
-            this.classes.sort();
+            if (order) destination.sort();
         },
         getIndex(index) {
             this.currentIndex = index;
@@ -108,28 +120,33 @@ export default {
     <RosterComposition :guildRoster="guildRoster" :classes="classes" @class-select="changeClassFilter"
         @only-80="setLevelFilter" />
     <div class="container">
-        <div class="row row-cols-5 text-center mb-3 px-3">
+        <div class="row row-cols-5 text-center align-items-center mb-3 px-3">
             <div class="col">
                 <h5 class="mb-2">NOME</h5>
-                <input type="text" v-model="nameFilter">
+                <input class="mb-3" type="text" v-model="nameFilter">
             </div>
             <div class="col">
                 <h5 class="mb-2">CLASSE</h5>
-                <select id="character-class" v-model="classFilter">
+                <select class="mb-3" id="character-class" v-model="classFilter">
                     <option value="">--No Filter--</option>
                     <option v-for="(classname, i) in classes" :key="i">{{ classname }}</option>
                 </select>
-            </div>
-            <div class="col">
                 <h5 class="mb-2">RAZZA</h5>
-                <select id="character-class" v-model="raceFilter">
+                <select id="character-race" v-model="raceFilter">
                     <option value="">--No Filter--</option>
                     <option v-for="(race, i) in races" :key="i">{{ race }}</option>
                 </select>
             </div>
             <div class="col">
+                <h5 class="mb-2">RANK</h5>
+                <select class="mb-3" id="character-class" v-model="rankFilter">
+                    <option value="">--No Filter--</option>
+                    <option v-for="(rank, i) in ranks" :key="i">{{ rank }}</option>
+                </select>
+            </div>
+            <div class="col">
                 <h5 class="mb-2">LIVELLO</h5>
-                <div class="level-group d-flex align-items-center justify-content-center">
+                <div class="level-group d-flex align-items-center justify-content-center mb-3">
                     <input class="level" type="number" min="1" max="80" v-model="levelFilter">
                     <button class="reset-level btn btn-danger" @click="levelFilter = null"><font-awesome-icon
                             icon="fa-solid fa-circle-minus" /></button>
@@ -137,7 +154,7 @@ export default {
             </div>
             <div class="col">
                 <h5 class="mb-2">STATUS</h5>
-                <select id="online" v-model="status" @change="fetchCharacters()">
+                <select class="mb-3" id="online" v-model="status" @change="fetchCharacters()">
                     <option value="">--No Filter--</option>
                     <option value="online">Online</option>
                     <option value="offline">Offline</option>

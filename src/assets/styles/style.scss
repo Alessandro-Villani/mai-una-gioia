@@ -1,5 +1,5 @@
-@use './partials/mixins' as *;
-@use './partials/variables' as *;
+@use "./partials/mixins" as *;
+@use "./partials/variables" as *;
 
 main {
     height: calc(100vh - 60px);
@@ -41,18 +41,42 @@ main {
     color: $shaman;
 }
 
-.warlock{
+.warlock {
     color: $warlock;
 }
 
-.warrior{
+.warrior {
     color: $warrior;
+}
+
+.gm {
+    color: $gm;
+}
+
+.Officer {
+    color: $officer;
+}
+
+.Veterano {
+    color: $veterano;
+}
+
+.core-raider {
+    color: $core-raider;
+}
+
+.Gildano {
+    color: $gildano;
+}
+
+.Recluta {
+    color: $recluta;
 }
 
 ::-webkit-scrollbar {
     background-color: $secondary-background;
 }
 
-::-webkit-scrollbar-thumb{
+::-webkit-scrollbar-thumb {
     background-color: $main-background;
 }

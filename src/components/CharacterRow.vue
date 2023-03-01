@@ -6,6 +6,7 @@ export default {
     data() {
         return {
             character: [],
+            characterAdditionals: [],
             isShown: false,
             isLoading: false,
         };
@@ -30,6 +31,12 @@ export default {
         colorClass() {
             return this.characterData.class.toLowerCase().replace(" ", "");
         },
+        colorRank() {
+            if (!this.characterAdditionals) return ''
+            if (this.characterAdditionals.rank === 'Mamma Fastidio') return 'gm'
+            if (this.characterAdditionals.rank === 'Core Raider') return 'core-raider'
+            return this.characterAdditionals.rank;
+        }
     },
     methods: {
         fetchCharacter() {
@@ -52,6 +59,13 @@ export default {
                 if (this.character && !this.character.error) this.isLoading = false;
             })
         },
+        fetchCharacterAdditionals() {
+            if (this.characterAdditionals.length !== 0 && !this.characterAdditionals.error) return
+            const charUrl = `http://localhost/my_projects/mai_una_gioia_server/dkp_api.php?charname=${this.characterData.name}`;
+            axios.get(charUrl).then(res => {
+                this.characterAdditionals = res.data[0];
+            })
+        },
         cardClick() {
             if (this.index !== this.currentIndex) this.isShown = false;
             this.$emit('index', this.index);
@@ -60,13 +74,15 @@ export default {
         }
 
     },
-
+    mounted() {
+        this.fetchCharacterAdditionals();
+    },
     components: { CharacterDetails }
 }
 </script>
 
 <template>
-    <div class="card p-3 px-5 mb-3" @click="cardClick">
+    <div class="card p-3 mb-3" @click="cardClick">
         <div class="row row-cols-5 align-items-center text-center mb-2">
             <div class="col">
                 <h6 class="mb-0" :class="colorClass">{{ characterData.name }}</h6>
@@ -78,13 +94,21 @@ export default {
                     </figure>
                     <h6 class="mb-0" :class="colorClass">{{ characterData.class }}</h6>
                 </div>
-            </div>
-            <div class="col d-flex flex-column align-items-center justify-content-center">
                 <div>
                     <figure class="d-flex align-items-center justify-content-center m-0">
                         <img class="race" :src="raceImageUrl" :alt="characterData.race">
                     </figure>
                     <h6 class="mb-0">{{ characterData.race }}</h6>
+                </div>
+            </div>
+            <div class="col d-flex flex-column align-items-center justify-content-center">
+                <div class="mb-3">
+                    <h6 class="mb-0" :class="colorRank">{{ characterAdditionals ? characterAdditionals.rank : 'N/A' }}
+                    </h6>
+                </div>
+                <div>
+                    <h6 class="mb-0">DKP: {{ characterAdditionals.net }}
+                    </h6>
                 </div>
             </div>
             <div class="col">
